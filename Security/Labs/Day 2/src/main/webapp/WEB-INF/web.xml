@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+    https://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
+
+    
+    <!-- (1) Creating the root Application-Context -->
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <context-param>
+        <!-- when you have both web and root, authorization should be in root -->
+        <param-name>contextConfigLocation</param-name>
+        <!-- Does orders matters -->
+        <param-value>/WEB-INF/spring/root-configs.xml, /WEB-INF/spring/security-configs.xml</param-value>
+    </context-param>
+    
+    <!-- (2) Creating the web application-context -->
+    <servlet>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- Cannot be used with init param ,
+             if used : ServletContext resource must be /WEB-INF/(servlet name)-servlet.xml -->
+
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/spring/mvc-configs.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DispatcherServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!-- (3) Adding the spring security delegating filter proxy that creates the filter chain -->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+</web-app>

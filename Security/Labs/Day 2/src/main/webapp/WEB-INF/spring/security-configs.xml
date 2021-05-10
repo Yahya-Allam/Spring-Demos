@@ -1,0 +1,41 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        https://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+        <!-- (1) Authentication configuration -->
+        <security:authentication-manager erase-credentials="true">
+            <security:authentication-provider>
+                <!-- In-Memory user details service -->
+                <security:user-service>
+                    <!-- password:psw123 -->
+                    <security:user name="Yahya" password="$2a$10$vQcClMlpQJ9xyy6Z4wknp.ZyMzBmLxlXxCRaYLfzc35VrzY/LE4O2" authorities="ROLE_USER"/>
+                    <security:user name="Khalil" password="$2a$10$vQcClMlpQJ9xyy6Z4wknp.ZyMzBmLxlXxCRaYLfzc35VrzY/LE4O2" authorities="ROLE_USER,ROLE_ADMIN"/>
+                    <security:user name="Allam" password="$2a$10$vQcClMlpQJ9xyy6Z4wknp.ZyMzBmLxlXxCRaYLfzc35VrzY/LE4O2" authorities="ROLE_USER,ROLE_ADMIN,ROLE_MANAGER"/>
+                </security:user-service>
+                <!-- Declare password encoder -->
+                <security:password-encoder hash="bcrypt"/>
+
+            </security:authentication-provider>
+        </security:authentication-manager>
+
+        <!-- (2) Authorization configurations -->
+        <security:http auto-config="true">
+            <security:access-denied-handler error-page="/error"/>
+
+            <!-- Order of interceptors matters -->
+            <security:intercept-url pattern="/admin/*" access="hasRole('ROLE_ADMIN')"/>
+            <security:intercept-url pattern="/user/*" access="hasRole('ROLE_USER')"/>
+            <security:intercept-url pattern="/*" access="permitAll()"/>
+            <security:session-management >
+                <security:concurrency-control max-sessions="1" error-if-maximum-exceeded="true"/>
+            </security:session-management>
+        </security:http>
+
+</beans>
