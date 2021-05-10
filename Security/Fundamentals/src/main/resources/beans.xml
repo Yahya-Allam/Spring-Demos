@@ -1,0 +1,35 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        https://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd">
+
+        <context:annotation-config/>
+
+        <context:component-scan base-package="iti.labs.spring.security" />
+
+        <security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
+            <security:protect-pointcut expression="execution(* iti.labs.spring.security.impl.HelloServiceImpl.addUser(..))" access="ROLE_ADMIN" />
+        </security:global-method-security>
+        <bean id="helloService" class="iti.labs.spring.security.impl.HelloServiceImpl"/>
+        
+
+        <security:authentication-manager erase-credentials="true">
+            <security:authentication-provider>
+                <security:user-service>
+                    <security:user name="Yahya" password="$2a$10$vQcClMlpQJ9xyy6Z4wknp.ZyMzBmLxlXxCRaYLfzc35VrzY/LE4O2" authorities="ROLE_USER"/>
+                    <security:user name="Khalil" password="$2a$10$vQcClMlpQJ9xyy6Z4wknp.ZyMzBmLxlXxCRaYLfzc35VrzY/LE4O2" authorities="ROLE_USER,ROLE_ADMIN"/>
+                    <security:user name="Allam" password="$2a$10$vQcClMlpQJ9xyy6Z4wknp.ZyMzBmLxlXxCRaYLfzc35VrzY/LE4O2" authorities="ROLE_USER,ROLE_ADMIN,ROLE_MANAGER"/>
+                </security:user-service>
+
+                <security:password-encoder hash="bcrypt"/>
+
+            </security:authentication-provider>
+        </security:authentication-manager>
+
+</beans>
